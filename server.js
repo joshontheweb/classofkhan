@@ -87,14 +87,14 @@ User = mongoose.model('User');
 
 var app = express.createServer(
     express.bodyParser()
-  , express.static(__dirname + "/public")
+  , express.static(__dirname + "/media")
   , express.cookieParser()
   , express.session({ secret: 'esoognom'})
   , mongooseAuth.middleware()
 );
 
 app.configure( function () {
-  app.set('views', __dirname + '/views');
+  app.set('views', __dirname + '/templates');
   app.set('view engine', 'jade');
 });
 

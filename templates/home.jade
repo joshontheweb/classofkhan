@@ -1,0 +1,19 @@
+- if (!everyauth.loggedIn)
+  h2 Not Authenticated
+  #fb-login.fb_button(style='float: left; background-position:left -188px')
+    a.fb_button_medium(href='/auth/facebook')
+        span Facebook Login
+  #twitter-login.fb_button(style='float: left; margin-left: 5px')
+    a(href='/auth/twitter', style='border: 0px')
+      span Twitter Login
+- else
+  h2 Authenticated
+  #user-id Logged in with `user.id` #{user.id} - aka `everyauth.user.id` #{everyauth.user.id}
+  - if (everyauth.facebook)
+    h3 Facebook User Data
+    p= JSON.stringify(everyauth.facebook.user)
+  - if (everyauth.twitter)
+    h3 Twitter User Data
+    p= JSON.stringify(everyauth.twitter.user)
+  h3
+    a(href='/logout') Logout
