@@ -1,0 +1,16 @@
+{
+  "author": "joshontheweb <josh@joshontheweb.com> (joshontheweb.com)",
+  "name": "alumni",
+  "description": "AlumniChoose",
+  "version": "0.0.0",
+  "homepage": "alumnichoose.com",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jmattle/alumnichoose.git"
+  },
+  "engines": {
+    "node": "~v0.4.11"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
