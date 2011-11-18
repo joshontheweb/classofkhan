@@ -1,0 +1,5 @@
+.header { margin: 30px 0; }
+.user-links { float: right; }
+.stash { display: none; }
+.project-form { padding: 15px; background: #fff; border: 1px solid #ccc; position: absolute; height: 165px; width: 300px; left: 50%; margin-left: -150px; top: 40%; margin-top: -82px; box-shadow: 0 0 30px rgba(0,0,0,.3); border-radius: 5px; }
+.avatar { float: left; }

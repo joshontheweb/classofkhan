@@ -1,9 +1,17 @@
-var express = require('express');
+var express = require('express'),
+    _ = require('underscore');
+
+// underscore template languate settings
+_.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g, // {{ var }}
+    evaluate: /\{\%(.+?)\%\}/g // {% expression %}
+}; 
 
 var conf = require('./conf');
 
 var everyauth = require('everyauth')
-  , Promise = everyauth.Promise;
+  , Promise = everyauth.Promise
+  ,  mongooseAuth = require('mongoose-auth');
 
 everyauth.debug = true;
 
@@ -14,7 +22,6 @@ var mongoose = require('mongoose')
 var UserSchema = new Schema({})
   , User;
 
-var mongooseAuth = require('mongoose-auth');
 
 UserSchema.plugin(mongooseAuth, {
     everymodule: {
@@ -77,29 +84,78 @@ UserSchema.plugin(mongooseAuth, {
       }
     }
 });
-// Adds login: String
 
 mongoose.model('User', UserSchema);
 
-mongoose.connect('mongodb://localhost/example');
+var ProjectSchema = new Schema({
+    ownerId: ObjectId,
+    title: String,
+    media: String,
+    slug: String,
+});
+
+// create slug from title on save
+ProjectSchema.pre('save', function (next) {
+  this.slug = this.title.toLowerCase().replace(/ /g, '-');
+  next();
+});
+
+mongoose.model('Project', ProjectSchema);
+
+var DonationSchema = new Schema({
+    projectId: ObjectId,
+    donorId: ObjectId,
+    amount: Number
+});
+
+mongoose.model('Donation', DonationSchema);
+
+mongoose.connect('mongodb://localhost/alumni');
 
 User = mongoose.model('User');
+Project = mongoose.model('Project');
 
 var app = express.createServer(
     express.bodyParser()
-  , express.static(__dirname + "/media")
   , express.cookieParser()
-  , express.session({ secret: 'esoognom'})
+  , express.session({ secret: '$3CR3#'})
   , mongooseAuth.middleware()
 );
 
+app.use('/media', express.static(__dirname + '/media'));
+
 app.configure( function () {
   app.set('views', __dirname + '/templates');
-  app.set('view engine', 'jade');
+});
+
+app.register('.html', {
+    compile: function (str, options) {
+        var template = _.template(str);
+        return function (locals) {
+          return template(locals);
+        };
+    }
 });
 
 app.get('/', function (req, res) {
-  res.render('home');
+    var templateVars = {};
+    Project.find({}, function(err, projects) {
+        templateVars.projects = projects;
+        res.render('index.html', templateVars);
+    });
+});
+
+app.get('/:projectSlug', function (req, res) {
+    var templateVars = {};
+    Project.findOne({slug: req.params.projectSlug}, function(err, project) {
+        if (!project) { return res.render('404.html') }
+        templateVars.project = project;
+
+        User.findOne({_id: project._doc.userId}, function(err, owner) {
+            templateVars.owner = owner;
+            res.render('project.html', templateVars);
+        });
+    });
 });
 
 app.get('/logout', function (req, res) {
@@ -107,6 +163,30 @@ app.get('/logout', function (req, res) {
     res.redirect('/');
 });
 
+// testing route...  should use front end url routing in the end
+app.get('/some-project', function (req, res) {
+  res.render('project.html');
+});
+
 mongooseAuth.helpExpress(app);
 
 app.listen(3000);
+
+var io = require('socket.io').listen(3001);
+
+io.sockets.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+  
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+  
+  socket.on('project:create', function (data) {
+    console.log(data);
+    var project = new Project(data);
+    project.save();
+  });
+});

@@ -1,0 +1,7 @@
+
+    <h3>Projects</h3>
+    <ul>
+        {% _.each(projects, function(project) { %}
+            <li><a href="{{ project.slug }}">{{ project.title }}</a></li>
+        {% }); %}
+    </ul>
