@@ -1,5 +1,24 @@
+.authenticate { margin: 100px auto; width: 400px; padding: 15px; border: 1px solid #ddd; }
+.authenticate .auth { display: block; }
 .header { margin: 30px 0; }
 .user-links { float: right; }
 .stash { display: none; }
 .project-form { padding: 15px; background: #fff; border: 1px solid #ccc; position: absolute; height: 165px; width: 300px; left: 50%; margin-left: -150px; top: 40%; margin-top: -82px; box-shadow: 0 0 30px rgba(0,0,0,.3); border-radius: 5px; }
 .avatar { float: left; }
+
+/* classroom */
+.video { width: 560px; margin: 0 auto; }
+.desks { margin: 0 auto; width: 560px; }
+.user { width: 71px; height: 145px; background: url('images/boy.png'); margin: -20px auto 0 auto; position: relative; }
+
+.desk { height: 79px; width: 89px; display: block; margin-left: 20px; float: left; background: url('images/desk.png') no-repeat; position: relative; }
+
+.chat-box { /* affects both input and output boxes */
+    .pixelfont; display: block; background: #fff; color: black; line-height: normal;
+    position: absolute; left: -150px; top: -50px; z-index: 100; height: 80px; width: 150px; max-width: none;
+}
+
+div.chat-box { /* output box only */
+    padding: 5px 10px;
+}
+

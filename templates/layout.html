@@ -8,7 +8,7 @@
 	<!-- Basic Page Needs
   ================================================== -->
 	<meta charset="utf-8" />
-	<title>AlumniChoose</title>
+	<title>Class of Khan</title>
 	<meta name="description" content="Intelligent Donations to your Alma Mater">
 	<!--[if lt IE 9]>
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -45,42 +45,37 @@
 	<div class="container">	
         <div class="header sixteen columns">
             <script>
-                var user = {{ JSON.stringify(everyauth) }}
+                var user = <%= JSON.stringify(everyauth) %>
             </script>
             <div class="user-links">
-                {% if (everyauth.loggedIn) { %}
-                    <a class="create-project" href="#">Create Project</a>
+                <% if (everyauth.loggedIn) { %>
                     <a href="/logout">log out</a>
-                {% } else { %}
-                    <a href="/auth/twitter">Login with Twitter</a> 
-                    <a href="/auth/facebook">Login with Facebook</a>
-                {% } %}
+                <% } %>
             </div>
-            <div class="logo"><h1>AlumniChoose</h1></div>
+            <div class="logo"><h1>Class of Khan</h1></div>
         </div>
         <div class="main-content sixteen columns">
-            {{ body }}
+            <%= body %>
         </div>
         <div class="footer">
             <hr />
             <div class="one-third column">
-                <h3>About AlumniChoose?</h3>	
-                <p>AlumniChoose is a small collection of well-organized CSS & JS files that can help you rapidly develop sites that look beautiful at any size, be it a 17" laptop screen or an iPhone. It's based on a responsive grid, but also provides very basic CSS for typography, buttons, tabs, forms and media queries. Go ahead, resize this super basic page to see the grid in action.</p>
+                <h3>About Class of Khan?</h3>	
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
             </div>
             <div class="one-third column">
                 <h3>Three Core Principles</h3>	
-                <p>AlumniChoose is built on three core principles:</p>
-                <ul class="square">
-                    <li><strong>A Responsive Grid Down To Mobile</strong>: Elegant scaling from a browser to tablets to mobile.</li>
-                    <li><strong>Fast to Start</strong>: It's a tool for rapid development with best practices</li>
-                    <li><strong>Style Agnostic</strong>: It provides the most basic, beautiful styles, but is meant to be overwritten.</li>
+                <p><strong>Class of Khan</strong> is built on three core principles:</p>
+                <ul>
+                   <li><strong>Lorem Ipsum</strong>: Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+                   <li><strong>Sit Amet</strong>: Aliquam tincidunt mauris eu risus.</li>
+                   <li><strong>Aliquam Tincidunt</strong>: Vestibulum auctor dapibus neque.</li>
                 </ul>
             </div>
             <div class="one-third column">
-                <h3>Docs &amp; Support</h3>	
-                <p>The easiest way to really get started with AlumniChoose is to check out the full docs and info at <a href="http://www.alumnichoose.com">www.alumnichoose.com.</a>. AlumniChoose is also open-source and has a <a href="www.alumnichoose.com">project on git</a>, so check that out if you want to report bugs or create a pull request. If you have any questions, thoughts, concerns or feedback, please don't hesitate to email me at <a href="mailto:hi@getskeleton.com">hi@getskeleton.com</a>.</p>
+                <h3>Support &amp; FAQ</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>	
             </div>
-                
         </div>
 	</div><!-- container -->
 
@@ -97,10 +92,10 @@
     </div>
     <script>
         jsonVars = {
-            {% if (user) { %}
-                user: {{ JSON.stringify(user) }},
-            {% } %}
-            everyauth: {{ JSON.stringify(everyauth) }}
+            <% if (user) { %>
+                user: <%= JSON.stringify(user) %>,
+            <% } %>
+            everyauth: <%= JSON.stringify(everyauth) %>
         }
     </script>
     

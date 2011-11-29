@@ -1,7 +1,78 @@
+<div class="classroom">
+    <div class="video">
+        <iframe width="560" height="315" src="http://www.youtube.com/embed/D1eibbfAEVk?wmode=transparent" frameborder="0" allowfullscreen></iframe> 
+    </div>
+    <div class="desks">
+        <div class="row row-0">
+            <div class="desk desk-0">
+            </div>
+            <div class="desk desk-1">
+            </div>
+            <div class="desk desk-2">
+            </div>
+            <div class="desk desk-3">
+            </div>
+            <div class="desk desk-4">
+            </div>
+        </div>
+        <div class="row row-1">
+            <div class="desk desk-0">
+            </div>
+            <div class="desk desk-1">
+            </div>
+            <div class="desk desk-2">
+            </div>
+            <div class="desk desk-3">
+            </div>
+            <div class="desk desk-4">
+            </div>
+        </div>
+        <div class="row row-2">
+            <div class="desk desk-0">
+            </div>
+            <div class="desk desk-1">
+            </div>
+            <div class="desk desk-2">
+            </div>
+            <div class="desk desk-3">
+            </div>
+            <div class="desk desk-4">
+            </div>
+        </div>
+        <div class="row row-3">
+            <div class="desk desk-0">
+            </div>
+            <div class="desk desk-1">
+            </div>
+            <div class="desk desk-2">
+            </div>
+            <div class="desk desk-3">
+            </div>
+            <div class="desk desk-4">
+            </div>
+        </div>
+    </div>
+</div>
 
-    <h3>Projects</h3>
-    <ul>
-        {% _.each(projects, function(project) { %}
-            <li><a href="{{ project.slug }}">{{ project.title }}</a></li>
-        {% }); %}
-    </ul>
+<script class="classroom-template" type="text/html">
+    <div class="video">
+       <iframe width="560" height="315" src="http://www.youtube.com/embed/D1eibbfAEVk?wmode=transparent" frameborder="0" allowfullscreen></iframe> 
+    </div>
+    <div class="desks">
+    </div>
+</script>
+
+<script class="user-template" type="text/html">
+</script>
+
+<script class="desk-template" type="text/html">
+</script>
+
+<script class="message-template" type="text/html">
+    <a class="username">{{username}}</a> <span class="message">{{content}}</span> 
+</script> 
+
+<script class="chat-log-template" type="text/html">
+</script>
+
+
