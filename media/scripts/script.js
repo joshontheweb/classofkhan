@@ -291,7 +291,7 @@
         window.app.start({classSizeLimit: 20});
 
         // socket communication
-        socket = io.connect('http://localhost:3001');
+        socket = io.connect('', {port: 3000});
         
         socket.on('connected', function(data) {
             app.users.add(data.users);

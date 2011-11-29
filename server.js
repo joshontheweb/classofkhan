@@ -172,9 +172,9 @@ app.get('/logout', function (req, res) {
 
 mongooseAuth.helpExpress(app);
 
-app.listen(conf.port);
 
-var io = require('socket.io').listen(conf.port+1);
+var io = require('socket.io').listen(app);
+app.listen(conf.port);
 
 var users = []
 
