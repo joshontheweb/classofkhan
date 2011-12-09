@@ -19,7 +19,10 @@ module.exports = {
     foursquare: {
         clientId: 'VUGE4VHJMKWALKDKIOH1HLD1OQNHTC0PBZZBUQSHJ3WKW04K'
       , clientSecret: '0LVAGARGUN05DEDDRVWNIMH4RFIHEFV0CERU3OITAZW1CXGX'
-    }
+    },
+
+    // khan academy
+    khanApiVersion: 'v1'
 };
 
 module.exports.port = 3000;

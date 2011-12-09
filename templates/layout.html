@@ -95,7 +95,17 @@
             <% if (user) { %>
                 user: <%= JSON.stringify(user) %>,
             <% } %>
-            everyauth: <%= JSON.stringify(everyauth) %>
+            everyauth: <%= JSON.stringify(everyauth) %>,
+            <% if (typeof rooms !== 'undefined') { %>
+                rooms: <%= JSON.stringify(rooms) %>,
+            <% } %>
+            <% if (typeof room !== 'undefined') { %>
+                room: <%= JSON.stringify(room) %>,
+            <% } %>
+            <% if (typeof videos !== 'undefined') { %>
+                videos: <%= JSON.stringify(videos) %>,
+            <% } %>
+
         }
     </script>
     

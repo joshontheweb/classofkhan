@@ -1,5 +1,6 @@
 var express = require('express'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    http = require('http');
 
 // underscore template languate settings
 // _.templateSettings = {
@@ -95,6 +96,17 @@ UserSchema.pre('save', function(next) {
 
 mongoose.model('User', UserSchema);
 
+var RoomSchema = new Schema({
+    title: String,
+    slug: String,
+    khanId: String,
+});
+
+RoomSchema.pre('save', function(next) {
+    this.slug = this.title.toLowerCase().replace(/ /g, '-');
+    next(); 
+});
+
 var ProjectSchema = new Schema({
     ownerId: ObjectId,
     title: String,
@@ -148,21 +160,84 @@ app.register('.html', {
 
 app.get('/', function (req, res) {
     var templateVars = {};
-    var template = req.loggedIn ? 'index.html' : 'login.html';
-    res.render(template, templateVars);
+    if (req.loggedIn) {
+        var options = {
+            host: 'www.khanacademy.org',
+            port: 80,
+            path: '/api/' + conf.khanApiVersion + '/playlists'
+        };
+        
+        http.get(options, function(response) {
+            var str = ''
+            response.on('data', function(data) {
+                str = str + data
+            });
+            
+            response.on('end', function() {
+                templateVars.rooms = JSON.parse(str);
+                _.each(templateVars.rooms, function(room) {
+                    if (users[room.title]) {
+                        room.count = users[room.title].length;
+                    } else {
+                        room.count = 0;
+                    }
+                });
+                res.render('lobby.html', templateVars);
+            });
+        });
+        
+    } else {
+        res.render('login.html', templateVars);
+    }
+
+    
 });
 
-app.get('/:projectSlug', function (req, res) {
-    var templateVars = {};
-    Project.findOne({slug: req.params.projectSlug}, function(err, project) {
-        if (!project) { return res.render('404.html') }
-        templateVars.project = project;
+// app.get('/:projectSlug', function (req, res) {
+//     var templateVars = {};
+//     Project.findOne({slug: req.params.projectSlug}, function(err, project) {
+//         if (!project) { return res.render('404.html') }
+//         templateVars.project = project;
+// 
+//         User.findOne({_id: project._doc.userId}, function(err, owner) {
+//             templateVars.owner = owner;
+//             res.render('project.html', templateVars);
+//         });
+//     });
+// });
 
-        User.findOne({_id: project._doc.userId}, function(err, owner) {
-            templateVars.owner = owner;
-            res.render('project.html', templateVars);
+app.get('/room/:roomSlug', function (req, res) {
+    var templateVars = {};
+
+    var options = {
+        host: 'www.khanacademy.org',
+        port: 80,
+        path: '/api/' + conf.khanApiVersion + '/playlists/' + encodeURI(req.params.roomSlug) + '/videos'
+    };
+        
+    http.get(options, function(response) {
+        var str = ''
+        response.on('data', function(data) {
+            str = str + data
         });
+            
+        response.on('end', function() {
+            templateVars.videos = JSON.parse(str);
+            templateVars.room = req.params.roomSlug;
+            res.render('classroom.html', templateVars);
+        });
+
     });
+    
+    // Project.findOne({slug: req.params.roomSlug}, function(err, project) {
+    //     if (!project) { return res.render('404.html') }
+    //     templateVars.project = project;
+    // 
+    //     User.findOne({_id: project._doc.userId}, function(err, owner) {
+    //         templateVars.owner = owner;
+    //         res.render('project.html', templateVars);
+    //     });
+    // });
 });
 
 app.get('/logout', function (req, res) {
@@ -176,16 +251,23 @@ mongooseAuth.helpExpress(app);
 var io = require('socket.io').listen(app);
 app.listen(conf.port);
 
-var users = []
+var users = {}
 
 io.sockets.on('connection', function (socket) {
-    socket.emit('connected', {users: users});
+    socket.emit('connected');
     
     socket.on('join', function(data) {
         User.findOne({username: data.username}, function(err, user) {
+            socket.join(data.room);
+            socket.set('room', data.room);
+            
+            //create room if it doesn't exist yet
+            users[data.room] = users[data.room] ? users[data.room] : []
+
             socket.set('user', user);
-            users.push(user);
-            io.sockets.emit('joined', user);
+            users[data.room].push(user);
+            socket.emit('joined', {users: users[data.room]});
+            socket.broadcast.to(data.room).emit('joined', {users: [user]});
         });
     });
     
@@ -194,18 +276,24 @@ io.sockets.on('connection', function (socket) {
     socket.on('chat', function (data) {
         console.log(data);
         socket.get('user', function(err, user) {
-            socket.broadcast.emit('chat', {content: data.content, 'username': user.username});
+            socket.get('room', function(err, room) {
+                socket.broadcast.to(room).emit('chat', {content: data.content, 'username': user.username});
+            })
         });
     });
 
     socket.on('disconnect', function(data) {
         socket.get('user', function(err, user) {
-            var index = users.indexOf(user);
-            if (index > -1) { users.splice(index, 1) }
+            socket.get('room', function(err, room) {
+                var index = users[room].indexOf(user);
+                if (index > -1) { users[room].splice(index, 1) }
+
             
-            if (user) {
-                socket.broadcast.emit('disconnected', user);
-            }
+                if (user) {
+                    socket.broadcast.to(room).emit('disconnected', user);
+                }
+                socket.leave(room)
+            });
         });
     });
 });

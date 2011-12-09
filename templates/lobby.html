@@ -1,0 +1,11 @@
+<div class="rooms">
+    <ul>
+        <% _.each(rooms, function(room) { %>
+            <li><a href="/room/<%= room.title %>"><%= room.title %></a> <%= room.count %> students</li>
+        <% }); %>
+        <li><a href="/room/math">Math</a></li>
+        <li><a href="/room/history">History</a></li>
+        <li><a href="/room/geography">Geography</a></li>
+    </ul>
+    <!-- <a class="create-room" href="#">Create Room<a/> -->
+</div>

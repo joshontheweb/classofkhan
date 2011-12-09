@@ -89,23 +89,43 @@
         var Users = Backbone.Collection.extend({
             model: User
         });
+
+        var Video = Backbone.Model.extend({
+            defaults: {
+                'autoplay': 0
+            }
+        });
+
+        var Videos = Backbone.Collection.extend({
+            model: Video
+        });
     
         var ClassRoom = Backbone.Model.extend({
-            initialize: function() {
+            initialize: function(data) {
                 this.desks = new Desks();
-                
+                this.videos = new Videos(data.videos);
             }
         });
         
         var ClassRoomView = Backbone.View.extend({
             initialize: function() {
-                _.bindAll(this, 'insertDesk', 'assignUserToDesk', 'removeUserFromDesk');
+                _.bindAll(this, 'insertDesk', 'assignUserToDesk', 'removeUserFromDesk', 'renderVideo');
+                this.model.bind('change:video', this.renderVideo);
                 this.model.desks.bind('add', this.insertDesk);
                 app.users.bind('add', this.assignUserToDesk);
                 app.users.bind('remove', this.removeUserFromDesk);
+
+                this.model.set({video: this.model.videos.at(0)});
+                
             },
             
             template: _.template($('.classroom-template').html()),
+
+            videoTemplate: _.template($('.video-template').html()),
+            
+            renderVideo: function() {
+                this.$('.video').html(this.videoTemplate(this.model.get('video').toJSON()));
+            },
 
             insertDesk: function(desk) {
                 var deskView = new DeskView({model: desk});
@@ -144,6 +164,8 @@
                 for (i = 0; i < this.model.get('classSizeLimit'); i++) {
                     this.model.desks.add({});
                 }
+
+                this.renderVideo();
                 
                 return this;
             }
@@ -288,20 +310,19 @@
 
         window.app = new App();
         window.appView = new AppView({model: app, el: $('body')});
-        window.app.start({classSizeLimit: 20});
+        window.app.start({classSizeLimit: 20, videos: jsonVars.videos});
 
         // socket communication
         socket = io.connect('', {port: 3000});
         
         socket.on('connected', function(data) {
-            app.users.add(data.users);
-            socket.emit('join', {username: jsonVars.user.username});
+            socket.emit('join', {username: jsonVars.user.username, room: jsonVars.room});
         });
         
-        socket.on('joined', function(user) {
+        socket.on('joined', function(data) {
 
-            app.users.add(user)
-            console.log(user.username+ ' joined!');
+            app.users.add(data.users)
+            console.log(data.user.username+ ' joined!');
         });
         
         socket.on('news', function (data) {
