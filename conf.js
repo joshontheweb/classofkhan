@@ -25,5 +25,5 @@ module.exports = {
     khanApiVersion: 'v1'
 };
 
-module.exports.port = 3000;
+module.exports.port = 3001;
 module.hostname = 'http://local.host:'+ module.exports.port;
