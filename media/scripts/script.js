@@ -313,7 +313,7 @@
         window.app.start({classSizeLimit: 20, videos: jsonVars.videos});
 
         // socket communication
-        socket = io.connect('', {port: 3001});
+        socket = io.connect();
         
         socket.on('connected', function(data) {
             socket.emit('join', {username: jsonVars.user.username, room: jsonVars.room});
