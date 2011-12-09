@@ -92,7 +92,7 @@
 
         var Video = Backbone.Model.extend({
             defaults: {
-                'autoplay': 0
+                'autoplay': 1
             }
         });
 
